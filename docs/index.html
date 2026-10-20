@@ -19,7 +19,7 @@
 
 <header>
   <h1>TVS（TVBox-tvs）— TVBox 类空壳聚合播放器</h1>
-  <p class="sub">Flutter 跨平台 · Android TV / 电视盒子 / iOS / iPadOS / macOS · 提供 APK、自签名 IPA、DMG 直接下载</p>
+  <p class="sub">点播 · 直播 · 后台听剧 · 云盘浏览<br>支持 Android / Android TV / 电视盒子 / iOS / iPadOS / macOS，提供 APK、自签名 IPA、DMG 下载</p>
   <p class="en">A TVBox-style shell media player built with Flutter for Android TV, iOS and macOS — no built-in content, bring your own subscription and live sources.</p>
   <div class="badges">
     <a href="https://github.com/yuluoos/TVBox-tvs/releases/latest"><img src="https://img.shields.io/github/v/release/yuluoos/TVBox-tvs?label=release&color=blue" alt="最新版本"></a>
@@ -97,10 +97,11 @@
 </div>
 
 <h2>功能</h2>
+<p>TVS 将站点浏览、聚合搜索、视频播放和音频收听集中在一个应用中，适配手机触控、平板分栏与电视遥控器操作。内容、可用线路及云盘功能取决于你导入的源。</p>
 <div class="grid">
   <div class="card">
     <h3>订阅与源管理</h3>
-    <p>导入羊壳（PeekPro）订阅配置，多订阅管理与切换；内嵌本地服务运行爬虫源，完整支持 nodejs 类型 spider 站点。</p>
+    <p>通过链接或本地文件导入羊壳（PeekPro）订阅，多订阅管理与切换；支持 Node.js 类型 spider 站点与独立悦听音频源。</p>
   </div>
   <div class="card">
     <h3>点播与聚合搜索</h3>
@@ -108,19 +109,23 @@
   </div>
   <div class="card">
     <h3>播放器</h3>
-    <p>基于 media_kit（libmpv 内核），支持 m3u8 流；片头片尾跳过、m3u8 广告过滤、断点续播、倍速与手势调节。</p>
+    <p>支持片头片尾跳过、断点续播、倍速、画面比例与亮度 / 音量手势调节；加载时显示下载速度，全屏轻点空白区域可收起控件。支持对适用的 m3u8 点播播放列表过滤疑似广告分片，效果取决于源。</p>
   </div>
   <div class="card">
     <h3>直播</h3>
-    <p>自动识别 M3U / TXT（#genre# 分组）/ JSON 三种直播源格式，频道分组浏览、台标显示、独立直播播放器。</p>
+    <p>识别 M3U / TXT（#genre# 分组）/ JSON 直播源，支持脚本与 RTMP 来源、频道分组、台标、多线路切换和播放模式选择；刷新失败时保留已有频道。</p>
   </div>
   <div class="card">
     <h3>TV 与遥控器适配</h3>
-    <p>D-pad 遥控器按键导航与焦点管理，针对 Android TV 与电视盒子的使用场景优化。</p>
+    <p>D-pad 遥控器导航、焦点选择与播放菜单操作，针对 Android TV 与电视盒子优化。</p>
   </div>
   <div class="card">
-    <h3>听剧模式</h3>
-    <p>独立音频播放页与全局迷你播放条，支持后台播放（audio_service），可息屏听剧。</p>
+    <h3>听剧与音乐</h3>
+    <p>独立音频播放页与全局迷你播放条，支持后台与息屏播放、选集和播放模式切换；小说支持定时停止，音乐可展示匹配到的封面与歌词。</p>
+  </div>
+  <div class="card">
+    <h3>云盘与文件预览</h3>
+    <p>浏览源提供的云盘目录、打开媒体文件，并预览图片、PDF 和文本文件。具体内容与可用能力由源决定。</p>
   </div>
 </div>
 
@@ -139,8 +144,8 @@
 <p>不支持。TVS 只解析<strong>羊壳（PeekPro）格式</strong>的订阅，TVBox 自身的接口格式不保证可用。直播源则支持通用的 M3U / TXT / JSON，格式写法见 <a href="live.html">直播源导入说明</a>。</p>
 
 <h2>技术栈</h2>
-<p>Flutter（Dart）跨平台，覆盖 iOS / iPadOS / Android / Android TV / macOS；播放内核为 libmpv（media_kit）；
-  数据用 Isar 数据库 + 安全存储全部本地保存，无云端账号体系，隐私数据不出设备。</p>
+<p>基于 Flutter（Dart）开发，视频播放使用 yl_player，音频播放使用 just_audio 与 audio_service，源运行依托本地 Node.js 服务。媒体格式兼容性取决于设备、平台与源。</p>
+<p>订阅配置与播放记录使用 Isar 数据库和安全存储保存在本地；播放、内容查询和使用统计等功能会发起网络请求。</p>
 
 <h2>反馈</h2>
 <p>使用问题与 Bug 请提 <a href="https://github.com/yuluoos/TVBox-tvs/issues">Issues</a>（附系统版本、应用版本与复现步骤）；
@@ -148,7 +153,7 @@
 
 <footer>
   <p><strong>免责声明：</strong>本应用为空壳聚合播放器，不含任何内容与数据源，仅供个人学习与技术研究使用，请在遵守当地法律法规的前提下使用。</p>
-  <p class="kw">关键词：TVBox、tvbox 类客户端、TVBox iOS、TVBox macOS、TVBox IPA、空壳播放器、聚合播放器、电视盒子应用、Android TV 播放器、ATV apk、TV 版播放器、遥控器 D-pad 适配、羊壳、PeekPro 订阅、直播源播放器、M3U / IPTV 播放器、Flutter 播放器、media_kit、libmpv、nodejs spider 爬虫源、自签名 IPA、iOS 侧载、macOS DMG。</p>
+  <p class="kw">关键词：TVBox、tvbox 类客户端、TVBox iOS、TVBox macOS、TVBox IPA、空壳播放器、聚合播放器、电视盒子应用、Android TV 播放器、ATV apk、TV 版播放器、遥控器 D-pad 适配、羊壳、PeekPro 订阅、直播源播放器、M3U / IPTV 播放器、Flutter 播放器、yl_player、后台听剧、云盘浏览、nodejs spider 爬虫源、自签名 IPA、iOS 侧载、macOS DMG。</p>
   <p>项目源：<a href="https://github.com/yuluoos/TVBox-tvs">github.com/yuluoos/TVBox-tvs</a> · MIT License</p>
 </footer>
 
