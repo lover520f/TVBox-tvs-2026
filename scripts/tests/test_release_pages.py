@@ -3,6 +3,7 @@ import subprocess
 import tempfile
 import unittest
 import sys
+import re
 from pathlib import Path
 
 
@@ -55,6 +56,23 @@ class ReleasePageTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp_dir.cleanup()
+
+    def test_release_notes_embed_versioned_original_and_mirror_links(self):
+        script = (ROOT / "scripts/release.sh").read_text()
+        body = re.search(r'python3 - "\$NOTES"[^\n]*\n(.*?)\nPY', script, re.S).group(1)
+        output = self.temp / "release-notes.md"
+        subprocess.run(
+            ["python3", "-", str(self.notes), str(self.artifacts), str(output),
+             str(ROOT / "scripts"), "2.0.0"],
+            input=body, text=True, check=True,
+        )
+        text = output.read_text()
+        for item in json.loads(self.artifacts.read_text()).values():
+            url = download_url("2.0.0", item["name"])
+            self.assertIn(f"]({url})", text)
+            for _, prefix in MIRRORS:
+                self.assertIn(f"]({prefix}{url})", text)
+            self.assertIn(item["sha256"], text)
 
     def test_readme_update_replaces_previous_release_rows_and_notes(self):
         readme = self.temp / "README.md"

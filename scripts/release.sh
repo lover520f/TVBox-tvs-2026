@@ -110,10 +110,11 @@ python3 "$ROOT/scripts/update_site.py" \
 
 # ---------- Release 正文 ----------
 RELEASE_NOTES="$STAGE/release-notes.md"
-python3 - "$NOTES" "$ARTIFACTS" "$RELEASE_NOTES" "$ROOT/scripts" <<'PY'
+python3 - "$NOTES" "$ARTIFACTS" "$RELEASE_NOTES" "$ROOT/scripts" "$VERSION" <<'PY'
 import io, json, sys
 sys.path.insert(0, sys.argv[4])
 from download_links import markdown_links, NOTICE
+version = sys.argv[5]
 notes = io.open(sys.argv[1], encoding='utf-8').read().strip()
 files = json.loads(io.open(sys.argv[2], encoding='utf-8').read())
 labels = {
