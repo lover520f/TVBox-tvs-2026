@@ -9,37 +9,31 @@ import io
 import json
 import re
 import sys
+from download_links import download_url, markdown_links
 
 REPO = 'yuluoos/TVBox-tvs'
 ABI_LABELS = ['arm64-v8a', 'armeabi-v7a', 'x86_64']
 
 
-def download_url(version, filename):
-    return f'https://github.com/{REPO}/releases/download/v{version}/{filename}'
-
-
 def build_download_section(version, files):
-    apk_links = ' · '.join(
-        f'[{"arm64-v8a APK" if abi == "arm64-v8a" else abi}]({download_url(version, files[abi]["name"])})'
-        for abi in ABI_LABELS
-        if abi in files
-    )
     rows = [
         '| 平台 | 下载 | 说明 |',
         '| --- | --- | --- |',
     ]
-    if apk_links:
-        rows.append(
-            f'| Android / Android TV / 电视盒子 | {apk_links} | 绝大多数设备选 arm64-v8a |'
-        )
+    for abi in ABI_LABELS:
+        if abi in files:
+            hint = '绝大多数手机与电视盒子' if abi == 'arm64-v8a' else '按设备架构选择'
+            rows.append(
+                f'| Android / TV（{abi}） | {markdown_links(version, files[abi]["name"])} | {hint} |'
+            )
     if 'ipa' in files:
         rows.append(
-            f'| iOS / iPadOS | [自签名 IPA]({download_url(version, files["ipa"]["name"])}) '
+            f'| iOS / iPadOS | {markdown_links(version, files["ipa"]["name"], "自签名 IPA（GitHub）")} '
             '| 需自行签名侧载（如爱思、巨魔、AltStore、自签 API） |'
         )
     if 'dmg' in files:
         rows.append(
-            f'| macOS（Apple Silicon） | [DMG]({download_url(version, files["dmg"]["name"])}) '
+            f'| macOS（Apple Silicon） | {markdown_links(version, files["dmg"]["name"], "DMG（GitHub）")} '
             '| 首次打开需在「隐私与安全性」中放行 |'
         )
     return f'## 下载（最新版 {version}）\n\n' + '\n'.join(rows) + '\n'

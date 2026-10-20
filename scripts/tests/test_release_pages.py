@@ -2,13 +2,40 @@ import json
 import subprocess
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+from update_site import build_block
+from update_readme import build_download_section
+from download_links import MIRRORS, download_url
 
 
 class ReleasePageTests(unittest.TestCase):
+    def test_each_artifact_has_original_and_both_optional_mirrors(self):
+        filenames = {
+            "ipa": "tvs-selfsign-1.2.3.ipa",
+            "dmg": "tvs-1.2.3.dmg",
+            **{abi: f"tvs-1.2.3-{abi}.apk" for abi in ("arm64-v8a", "armeabi-v7a", "x86_64")},
+        }
+        files = {kind: {"name": name, "sha256": str(i) * 64}
+                 for i, (kind, name) in enumerate(filenames.items())}
+        site = build_block("1.2.3", files)
+        readme = build_download_section("1.2.3", files)
+        for item in files.values():
+            url = download_url("1.2.3", item["name"])
+            self.assertIn(f'href="{url}"', site)
+            self.assertIn(f']({url})', readme)
+            for _, prefix in MIRRORS:
+                self.assertIn(f'href="{prefix}{url}"', site)
+                self.assertIn(f']({prefix}{url})', readme)
+            self.assertIn(item["sha256"], site)
+        self.assertIn("第三方加速", site)
+        self.assertIn("第三方加速", readme)
+        self.assertNotIn("1.2.2", site + readme)
+
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.temp = Path(self.temp_dir.name)

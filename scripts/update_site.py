@@ -11,6 +11,7 @@ import io
 import json
 import re
 import sys
+from download_links import download_url, html_mirrors, NOTICE
 
 REPO = 'yuluoos/TVBox-tvs'
 ABI_LABELS = ['arm64-v8a', 'armeabi-v7a', 'x86_64']
@@ -18,16 +19,13 @@ BEGIN = '<!-- BEGIN:downloads -->'
 END = '<!-- END:downloads -->'
 
 
-def download_url(version, filename):
-    return f'https://github.com/{REPO}/releases/download/v{version}/{filename}'
-
-
 def build_block(version, files):
     cards = []
 
     if 'arm64-v8a' in files:
         alts = ' '.join(
-            f'<a href="{download_url(version, files[abi]["name"])}">{abi}</a>'
+            f'<div><a href="{download_url(version, files[abi]["name"])}">{abi}（GitHub 原链）</a>'
+            f'{html_mirrors(version, files[abi])}</div>'
             for abi in ABI_LABELS[1:]
             if abi in files
         )
@@ -36,7 +34,8 @@ def build_block(version, files):
             '  <div class="card">\n'
             '    <h3>Android / Android TV / 电视盒子</h3>\n'
             '    <p>绝大多数手机与盒子选 arm64-v8a；最低 Android 7.0</p>\n'
-            f'    <a class="btn" href="{download_url(version, files["arm64-v8a"]["name"])}">下载 APK (arm64-v8a)</a>'
+            f'    <a class="btn" href="{download_url(version, files["arm64-v8a"]["name"])}">GitHub 下载 APK (arm64-v8a)</a>'
+            f'{html_mirrors(version, files["arm64-v8a"])}'
             f'{alts_html}\n'
             '  </div>'
         )
@@ -46,7 +45,8 @@ def build_block(version, files):
             '  <div class="card">\n'
             '    <h3>iOS / iPadOS</h3>\n'
             '    <p>自签名 IPA，需自行签名侧载（爱思、巨魔、AltStore、自签 API）</p>\n'
-            f'    <a class="btn" href="{download_url(version, files["ipa"]["name"])}">下载 IPA</a>\n'
+            f'    <a class="btn" href="{download_url(version, files["ipa"]["name"])}">GitHub 下载 IPA</a>\n'
+            f'{html_mirrors(version, files["ipa"])}\n'
             '  </div>'
         )
 
@@ -55,13 +55,15 @@ def build_block(version, files):
             '  <div class="card">\n'
             '    <h3>macOS（Apple Silicon）</h3>\n'
             '    <p>首次打开需在「隐私与安全性」中放行；仅 arm64</p>\n'
-            f'    <a class="btn" href="{download_url(version, files["dmg"]["name"])}">下载 DMG</a>\n'
+            f'    <a class="btn" href="{download_url(version, files["dmg"]["name"])}">GitHub 下载 DMG</a>\n'
+            f'{html_mirrors(version, files["dmg"])}\n'
             '  </div>'
         )
 
     return (
         f'{BEGIN}\n'
         f'<h2 id="download">下载最新版 {version}</h2>\n'
+        f'<p>{NOTICE}</p>\n'
         '<div class="grid">\n'
         + '\n'.join(cards) + '\n'
         '</div>\n'

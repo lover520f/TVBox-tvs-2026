@@ -18,6 +18,8 @@
 | iOS / iPadOS | [自签名 IPA](https://github.com/yuluoos/TVBox-tvs/releases/download/v1.2.2/tvs-selfsign-1.2.2.ipa) | 需自行签名侧载（如爱思、巨魔、AltStore、自签 API） |
 | macOS（Apple Silicon） | [DMG](https://github.com/yuluoos/TVBox-tvs/releases/download/v1.2.2/tvs-1.2.2.dmg) | 首次打开需在「隐私与安全性」中放行 |
 
+GitHub 下载慢时可尝试表中的第三方加速；速度因地区和运营商而异，失败可切换线路。下载后请核对文末 SHA-256。
+
 ### 加入 TG 群
 
 扫码加入 TG 群，获取使用交流、问题反馈与更新通知。
@@ -160,8 +162,6 @@ TVBox、tvbox 类客户端、空壳播放器、聚合播放器、电视盒子应
 - 应用为 ad-hoc 自签名，首次打开会被 Gatekeeper 拦截；请在「访达」中右键点击 → 打开，或到「系统设置 → 隐私与安全性」中允许
 
 ### 1.2.2 更新内容
-
-## 更新内容
 
 - 新增本地订阅文件导入、云盘浏览与文件预览，并加入独立悦听音频源支持。
 - 增强直播源兼容与恢复能力，支持脚本、RTMP 等来源，安全处理异常订阅、并发修改和刷新失败。

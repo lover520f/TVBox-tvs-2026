@@ -110,8 +110,10 @@ python3 "$ROOT/scripts/update_site.py" \
 
 # ---------- Release 正文 ----------
 RELEASE_NOTES="$STAGE/release-notes.md"
-python3 - "$NOTES" "$ARTIFACTS" "$RELEASE_NOTES" <<'PY'
+python3 - "$NOTES" "$ARTIFACTS" "$RELEASE_NOTES" "$ROOT/scripts" <<'PY'
 import io, json, sys
+sys.path.insert(0, sys.argv[4])
+from download_links import markdown_links, NOTICE
 notes = io.open(sys.argv[1], encoding='utf-8').read().strip()
 files = json.loads(io.open(sys.argv[2], encoding='utf-8').read())
 labels = {
@@ -121,12 +123,12 @@ labels = {
     'ipa': 'iOS / iPadOS（自签名）',
     'dmg': 'macOS（Apple Silicon）',
 }
-rows = ['', '## 下载', '', '| 平台 | 文件 | SHA-256 |', '| --- | --- | --- |']
+rows = ['', '## 下载', '', NOTICE, '', '| 平台 | 文件 / 下载线路 | SHA-256 |', '| --- | --- | --- |']
 for kind in ('arm64-v8a', 'armeabi-v7a', 'x86_64', 'ipa', 'dmg'):
     if kind not in files:
         continue
     item = files[kind]
-    rows.append(f'| {labels[kind]} | {item["name"]} | `{item["sha256"]}` |')
+    rows.append(f'| {labels[kind]} | {markdown_links(version, item["name"], item["name"] + "（GitHub）")} | `{item["sha256"]}` |')
 io.open(sys.argv[3], 'w', encoding='utf-8').write(notes + '\n' + '\n'.join(rows) + '\n')
 PY
 
